@@ -39,7 +39,7 @@ Spark UI: http://localhost:4040/jobs/
 * In Spark terminology, the MASTER is a DRIVER and the slaves are the EXECUTORS; We are not talking about the cluster. The cluster itself might have a master node and a their slave nodes - we are talking about the application perspective;
 * The Spark Engine is going to ask for a **container** in the underlying Cluster Manager to start the Driver Process. Once it started, the Driver will ask for more containers to start the Executors process. This happens for **each application**
 * Spark can run the application with 5 configurations: 1. Local, 2. Hadoop YARN, 3. Kubernetes, 4. Apache Mesos & 5. Standalone
-* YARN on-Premise (basically Cloudera distributions); YARN on-Cloud (Databricks, Google DataPro, etc)
+* YARN on-Premise (basically Cloudera distributions); YARN on-Cloud (Databricks, Google DataProc, etc)
 * **How Spark run on a local machine?** When you use 'spark.master = local[1]' you'll have only a Driver container and no executors. Your driver is forced to do everything by himself. When you run your application with local[3], you'll have 1 driver + 2 executors;
 
 ~~~python
