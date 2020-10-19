@@ -40,6 +40,8 @@ An [Apache Spark](https://spark.apache.org/) comprehensive guide with PySpark.
 [SPARK_APP_CONFIGS]
 
 # Spark application running locally with 03 multiple threads
+# If you simple says local and don't put any number - it becomes a single-threaded application
+
 spark.master=local[3]
 
 ~~~
