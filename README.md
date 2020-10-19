@@ -133,6 +133,7 @@ log4j.appender.file.File=${spark.yarn.app.container.log.dir}/${logfile.name}.log
 * Setting Spark JVM Parameters: every Spark application has a SPARK_HOME environment variable
   * SPARK_HOME/conf/spark-defaults.conf
   * Spark will use the values in SPARK_HOME/conf/spark-defaults.conf to determine the variables to log4j
+  * Make to sure to add this lines to SPARK_HOME/conf/spark-defaults.conf so that Cluster Manager can collect our logs from a fixed folder.
   
 ~~~conf
 
