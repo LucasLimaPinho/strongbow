@@ -142,3 +142,20 @@ spark.driver.extraJavaOptions 	   -Dlog4j.configuration=file:log4j.properties -D
 
 ~~~
 
+#### Creating Spark Session
+
+* Every Spark application will create a Driver, even when configured as --master local[1] - than the driver has to do everything;
+* Driver is going to start the executors to do most of the work;
+* So the first thing in a Spark application is to create a **Spark Session Object which is your driver**;
+* When you create spark-shell, it creates for your a Spark Session available with a name "spark";
+
+~~~python
+
+# This is the only thing necessary to create a Spark Session.
+# Every Spark Application should have ONLY ONE SPARK SESSION - Driver.
+# SPARK SESSION IS A SINGLETON OBJECT
+
+spark = SparkSession.builder \
+     .getOrCreate()
+     
+~~~
