@@ -155,7 +155,13 @@ spark.driver.extraJavaOptions 	   -Dlog4j.configuration=file:log4j.properties -D
 # Every Spark Application should have ONLY ONE SPARK SESSION - Driver.
 # SPARK SESSION IS A SINGLETON OBJECT
 
-spark = SparkSession.builder \
-     .getOrCreate()
-     
+ spark = SparkSession.builder \
+      .appName("Spark Training") \
+      .master("local[3]") \
+      .getOrCreate()
+ 
+ # After running what has to do
+ 
+ spark.stop()
+ 
 ~~~
