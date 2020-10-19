@@ -20,4 +20,5 @@ An [Apache Spark](https://spark.apache.org/) comprehensive guide with PySpark.
     * **Spark Engine** is responsible for managing and monitoring thoses tasks;
     * **Spark Engine** is responsible for providing fault-tolerance when a job fails;
     * **Spark Engine** is responsible for interacting with the Cluster Manager and Storage Manager;
-  * **Spark Core**: Java, Scala, Python, R
+  * **Spark Core APIs**: Java, Scala, Python, R
+  * **Layers Above the Spark Core APIs**: Spark SQL Data Frames, Streaming, Mllib (Machine Learning), GraphX (Graph Computation)
