@@ -109,4 +109,7 @@ spark-submit --master yarn --deploy-mode cluster pi.py
 
 **How to create Spark Applications**
 
-Environment variable **PYTHONPATH** is used by Python to specify the list of directories of which modules can be imported. 
+* Environment variable **PYTHONPATH** is used by Python to specify the list of directories of which modules can be imported. 
+* %SPARK_HOME% should be set to the path where are the Spark binaries;
+* %SPARK_HOME% should point to the same version of pyspark imported in the Python Project
+* %PYSPARK_PYTHON% should point to python.exe in the correct version
