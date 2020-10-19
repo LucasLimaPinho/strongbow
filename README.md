@@ -117,3 +117,16 @@ spark-submit --master yarn --deploy-mode cluster pi.py
   * Create a Log4J configuration file
   * Configure Spark JVM to pick up the Log4j configuration file
   * Create a python class to get Spark's Log4j instance and use it
+
+~~~python
+
+# Important point about this variables
+# Your log file is also distributed as your processing is also distributed.
+# How are you going to collect them??
+# You are going to rely on your Cluster Manager to collect the logs and maintain in one predefined place
+# Fixed location on each machine - we define here with these variables
+# /var/log/log4j
+log4j.appender.file.File=${spark.yarn.app.container.log.dir}/${logfile.name}.log
+
+~~~
+
