@@ -4,6 +4,8 @@ An [Apache Spark](https://spark.apache.org/) comprehensive guide with PySpark.
 
 [Code](https://github.com/LearningJournal/Spark-Programming-In-Python)
 
+Spark UI: http://localhost:4040/jobs/
+
 #### Introduction
 
 * MapReduce: distribituted processing framework. Allowed us to divide the data processing job in smaller tasks and utilize the cluster of computers to finish the individual tasks independently and combine the results after;
