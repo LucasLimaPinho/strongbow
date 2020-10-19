@@ -82,3 +82,15 @@ pyspark --master local[3] --driver-memory 2G
 
 ~~~
 
+**YARN Client Mode using Google DataProc Cluster and Zeppelin Notebook**: 
+
+YARN Client mode -> Driver running on client machine and executors running on the YARN cluster. Monstly used by Data Scientists and Data Analysts to make interactive explorations. 
+
+~~~python
+# Using Spark Shell through SSH in Driver allocated in Cluster in Google DataProc
+# --master yarn
+
+pyspark --master yarn --driver-memory 1G --executor-memory 500M --num-executors 2 --executor-cores 1
+
+~~~
+
