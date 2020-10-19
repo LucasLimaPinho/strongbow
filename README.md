@@ -94,3 +94,15 @@ pyspark --master yarn --driver-memory 1G --executor-memory 500M --num-executors 
 
 ~~~
 
+**YARN Cluster Mode Spark Submit using Google DataProc and Zeppelin Notebook**:
+
+~~~python
+# Need to determine that the cell is going to run pyspark interpretator. By default, is a Scala cell
+
+%pyspark
+
+# pi.py is a application uploaded to the cluster
+
+spark-submit --master yarn --deploy-mode cluster pi.py
+
+~~~
