@@ -34,7 +34,9 @@ An [Apache Spark](https://spark.apache.org/) comprehensive guide with PySpark.
 * Spark applies a **master-slave architecture** for every application that it submits to the cluster; When we submit a application to the cluster, Spark will create a **MASTER PROCESS** for your application. This master process will create a bunch of slaves to distribute the work and do the individual tasks;
 * In Spark terminology, the MASTER is a DRIVER and the slaves are the EXECUTORS; We are not talking about the cluster. The cluster itself might have a master node and a their slave nodes - we are talking about the application perspective;
 * The Spark Engine is going to ask for a **container** in the underlying Cluster Manager to start the Driver Process. Once it started, the Driver will ask for more containers to start the Executors process. This happens for **each application**
-* **How Spark run on a local machine?** 
+* Spark can run the application with 5 configurations: 1. Local, 2. Hadoop YARN, 3. Kubernetes, 4. Apache Mesos & 5. Standalone
+* YARN on-Premise (basically Cloudera distributions); YARN on-Cloud (Databricks, Google DataPro, etc)
+* **How Spark run on a local machine?** When you use 'spark.master = local[1]' you'll have only a Driver container and no executors. Your driver is forced to do everything by himself. When you run your application with local[3], you'll have 1 driver + 2 executors;
 
 ~~~python
 [SPARK_APP_CONFIGS]
@@ -46,4 +48,33 @@ spark.master=local[3]
 
 ~~~
 
+* **How does Spark run with interactive clients?** The driver stays in the Cliente Machine while the Executors run queries in the Cluster; Good for interactive work, but not for longer runs jobs; In the Cluster Mode, everything runs in the Cluster - Driver + Executors.
+
+* **Running Spark In Command Line - Working with PySpark Shell**:
+
+~~~python
+
+# --master is the parameter that tells what is going to be the Cluster Manager. By default, is local[*]
+# Options for --master parameter are spark://host:port, mesos://host:port, yarn, k8s://host:port or local(Default: local[*])
+
+--master local[3]
+
+# --deploy-mode : whether to launch the driver program locally ("client") or on one of the worker machines inside the cluster ("cluster")
+# Default: "client"
+
+--deploy-mode "client"
+
+# --class CLASS_NAME -> your application main class for Java / Scala applications
+
+# --py-files PY_FILES -> Comma separated list of .zip, .egg or .py files to place on the PYTHONPATH for python apps
+
+# --driver-memory MEM Memory for driver (e.g. 1000M, 2G); (Default: 1024M)
+
+# --num-executors NUM -> Only relevant for YARN and Kubernetes Cluster Manager. Defines the number of executors to launch. If dynamic allocation is enabled, the initial number of executors will be at least NUM;
+
+# Our shell command:
+
+pyspark --master local[3] --driver-memory 2G
+
+~~~
 
