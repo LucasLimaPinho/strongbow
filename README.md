@@ -109,5 +109,4 @@ spark-submit --master yarn --deploy-mode cluster pi.py
 
 **How to create Spark Applications**
 
-A variável de ambiente **PYTHONPATH** é usada pelo Python para especificar uma lista de diretórios dos quais os módulos podem ser importados.
-
+Environment variable **PYTHONPATH** is used by Python to specify the list of directories of which modules can be imported. 
