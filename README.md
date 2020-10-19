@@ -165,3 +165,14 @@ spark.driver.extraJavaOptions 	   -Dlog4j.configuration=file:log4j.properties -D
  spark.stop()
  
 ~~~
+
+You can configure Spark Session with 4 different methods:
+
+1. Environment variables;
+2. SPARK_HOME/conf/spark-defaults.conf
+3. spark-submit command line options
+4. SparkConf Object
+
+* SparkContext represents the connection to a Spark Cluster
+* SparkContext can be used to get SparkConf object
+* SparkContext was a entrypoint to Programming Spark in older versions
