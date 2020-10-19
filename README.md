@@ -22,3 +22,26 @@ An [Apache Spark](https://spark.apache.org/) comprehensive guide with PySpark.
     * **Spark Engine** is responsible for interacting with the Cluster Manager and Storage Manager;
   * **Spark Core APIs**: Java, Scala, Python, R
   * **Layers Above the Spark Core APIs**: Spark SQL Data Frames, Streaming, Mllib (Machine Learning), GraphX (Graph Computation)
+
+#### Execution Methods
+
+* Interactive Clients: spark-shell, notebooks
+
+* Submit Job: spark-submit; submit your spark jobs through the cluster;
+
+#### How your Spark application runs?
+
+* Spark applies a **master-slave architecture** for every application that it submits to the cluster; When we submit a application to the cluster, Spark will create a **MASTER PROCESS** for your application. This master process will create a bunch of slaves to distribute the work and do the individual tasks;
+* In Spark terminology, the MASTER is a DRIVER and the slaves are the EXECUTORS; We are not talking about the cluster. The cluster itself might have a master node and a their slave nodes - we are talking about the application perspective;
+* The Spark Engine is going to ask for a **container** in the underlying Cluster Manager to start the Driver Process. Once it started, the Driver will ask for more containers to start the Executors process. This happens for **each application**
+* **How Spark run on a local machine?** 
+
+~~~python
+[SPARK_APP_CONFIGS]
+
+# Spark application running locally with 03 multiple threads
+spark.master=local[3]
+
+~~~
+
+
