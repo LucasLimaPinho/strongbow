@@ -114,6 +114,7 @@ spark-submit --master yarn --deploy-mode cluster pi.py
 * %SPARK_HOME% should point to the same version of pyspark imported in the Python Project
 * %PYSPARK_PYTHON% should point to python.exe in the correct version
 * Configuring Spark Application Logs: 
+  * Python logging is not integrated with Spark
   * Create a Log4J configuration file
   * Configure Spark JVM to pick up the Log4j configuration file
   * Create a python class to get Spark's Log4j instance and use it
