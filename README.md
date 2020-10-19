@@ -106,3 +106,8 @@ pyspark --master yarn --driver-memory 1G --executor-memory 500M --num-executors 
 spark-submit --master yarn --deploy-mode cluster pi.py
 
 ~~~
+
+**How to create Spark Applications**
+
+A variável de ambiente **PYTHONPATH** é usada pelo Python para especificar uma lista de diretórios dos quais os módulos podem ser importados.
+
