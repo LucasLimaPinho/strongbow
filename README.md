@@ -407,6 +407,9 @@ If the data parsed does not check the Schema defined, Spark will have its behavi
 
     summary_sql.show()
 
+    # .agg transformations are specially designed to take a list of aggregation functions
+    
+    
     summary_df = invoice_df \
         .groupBy("Country", "InvoiceNo") \
         .agg(f.sum("Quantity").alias("TotalQuantity"),
