@@ -321,3 +321,36 @@ spark.sql.shuffle.partitions = 2
 ~~~
 
 If the data parsed does not check the Schema defined, Spark will have its behaviour defined by the .option("mode", <>) parameter;
+
+#### Spark DataFrame Writer API
+
+* Allows you to write data;
+  * spark.write
+    * .format()
+    * .option()
+    * .option()
+    * ...
+    * .schema()
+    * .partitionBy()
+    * .bucketBy()
+    * .save()
+ * saveMode -> 1. append, 2. overwrite, 3. errorIfExists, 4. ignore
+ * The most important thing: you need to control **Spark File Layout**
+  1. Number of Files and File Size;
+  2. Partitions and Buckets;
+  3. Sorted Data
+  
+* Each partition is written by a Executor JVM in parallel
+* You can repartition your dataframes before you write - generating more partitions;
+* .partitionBy(col1,col2) is a powerful tool to brake your dataframes logically;Very helpfull to control the size of your partitions;
+* Partition your data with .bucketBy(n, col1, col2) with fixed number of pre-defined buckets;
+* sortBy() - used with .bucketBy() to generated sorted buckets.
+* maxRecordsPerFile - number of maximum rows in the partition files. You can control the size of your partitions and the number of partitions generated (optional);
+
+#### Spark DataFrame Aggregations
+
+* Aggregagations: Simple Aggregations, Grouping Aggregations & Windwowing Aggregagations;
+* All aggreggations in Spark are implemented as **built-in** function;
+* Aggregagation functions: avg(), count(), sum(), max(), min()
+* Window Aggregation functions: lead(), lag(), rank(), dense_rank(), cume_dist()
+* We can use SQLite expressions using Expr;
