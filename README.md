@@ -347,6 +347,64 @@ If the data parsed does not check the Schema defined, Spark will have its behavi
 * sortBy() - used with .bucketBy() to generated sorted buckets.
 * maxRecordsPerFile - number of maximum rows in the partition files. You can control the size of your partitions and the number of partitions generated (optional);
 
+#### Spark Dataframe and Dataset Transformations
+
+* Data Source -> Transformations -> Data Sink
+* In Spark, we read the data and can create **Dataframes - Programatic Interface for your data ---> Spark Program** or **Tables - SQL interface for your data ---> SQL Program**;
+* Transformations between Data Source and Data Sink
+
+
+  1. Combining Dataframes;
+  2. Aggregating and Sumarizing;
+  3. Applying Functions and built-in transformations;
+  4. Using built-in and column level functions;
+  5. Creating and using UDF's
+  6. Referencing Rows/Columns
+  7. Creating Column expressions
+
+**Working with dataframe rows**: Spark Dataframe is a dataset of rows - Dataframe = Dataset[Row]; Each row in the dataframe is a single record;
+
+* You can a use a RDD + SChema to create a Dataframe
+  * my_rdd = spark.SparkContext.parallelize(my_rows, 2)
+  * my_df = spark.createDataFrame(my_rdd, my_schema)
+  
+~~~python
+
+from pyspark.sql import *
+from pyspark.sql.functions import *
+from pyspark.sql.types import *
+
+from lib.logger import Log4j
+
+
+def to_date_df(df, fmt, fld):
+    return df.withColumn(fld, to_date(fld, fmt))
+
+
+if __name__ == "__main__":
+    spark = SparkSession \
+        .builder \
+        .master("local[3]") \
+        .appName("RowDemo") \
+        .getOrCreate()
+
+    logger = Log4j(spark)
+
+    my_schema = StructType([
+        StructField("ID", StringType()),
+        StructField("EventDate", StringType())])
+
+    my_rows = [Row("123", "04/05/2020"), Row("124", "4/5/2020"), Row("125", "04/5/2020"), Row("126", "4/05/2020")]
+    my_rdd = spark.sparkContext.parallelize(my_rows, 2)
+    my_df = spark.createDataFrame(my_rdd, my_schema)
+
+    my_df.printSchema()
+    my_df.show()
+    new_df = to_date_df(my_df, "M/d/y", "EventDate")
+    new_df.printSchema()
+    new_df.show()
+~~~
+
 #### Spark DataFrame Aggregations
 
 * Aggregagations: Simple Aggregations, Grouping Aggregations & Windwowing Aggregagations;
