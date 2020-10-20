@@ -4,6 +4,10 @@ from pyspark.sql import functions as f
 from lib.logger import Log4j
 
 if __name__ == "__main__":
+
+    # Create Spark Session - SingleTon Object. Our Driver.
+    # local[2] - 1 Driver & 1 Executor
+
     spark = SparkSession \
         .builder \
         .appName("Agg Demo") \
@@ -12,17 +16,25 @@ if __name__ == "__main__":
 
     logger = Log4j(spark)
 
+    # Reading as a Dataframe using DataFrameReader API
+    # inferSchema = true. Not necessary for Parquet and Avro files
+    # .load(path,file)
+
     invoice_df = spark.read \
         .format("csv") \
         .option("header", "true") \
         .option("inferSchema", "true") \
         .load("data/invoices.csv")
 
+    # All functions from pysparksql where imported as f
+    # Return the count of distinct rows
     invoice_df.select(f.count("*").alias("Count *"),
                       f.sum("Quantity").alias("TotalQuantity"),
                       f.avg("UnitPrice").alias("AvgPrice"),
                       f.countDistinct("InvoiceNo").alias("CountDistinct")
                       ).show()
+
+    # We can Use Expr to use SQL Language Expressions
 
     invoice_df.selectExpr(
         "count(1) as `count 1`",
