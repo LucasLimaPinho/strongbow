@@ -269,3 +269,4 @@ spark.sql.shuffle.partitions = 2
 
 * You can run SQL queries only in a **table or a view**;
 * Spark allows you to register your dataframe as View - surveyDF.createOrReplaceTempView("survey_tbl")
+* SQL has no additional significant computation cost;
