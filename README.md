@@ -219,5 +219,38 @@ count_df.show()
 
 ~~~
 
+Making it look a better code, we can do this:
 
+~~~python
+
+spark = SparkSession \
+      .builder \
+      .appName("HelloSpark") \
+      .master("local[2]") \
+      .getOrCreate()
+
+if len(sys.argv) != 2:
+      logger.error("Usage: HelloSpark <filename>")
+      sys.exit(-1)
+
+survey_raw_df = load_survey_df(spark, sys.argv[1])
+partitioned_survey_df = survey_raw_df.repartition(2)
+
+# partitioned_survey_df will have two partitions mannually determined by us
+
+count_df = count_by_country(partitioned_survey_df)
+count_df.show()
+
+~~~
+
+Notice that after we stablish that survey_raw_df should be partitioned into 2, we have a Wide Dependency Transformation inside the function count_by_country that contains a groupBy() method. It indicates that Spark will do the Shuffle/Sort Exchange Partition. We don't know how many partitions it is going to generate, but we want to be able to control this process. We can do this with configuration - **spark.sql.shuffle.partitions** in spark.conf.
+
+~~~python
+
+[SPARK_APP_CONFIGS]
+spark.app.name = HelloSpark
+spark.master = local[3]
+spark.sql.shuffle.partitions = 2
+
+~~~
 
