@@ -448,6 +448,7 @@ if __name__ == "__main__":
     # Writing aggregation function to use as parameter for the transformation .agg() and make code more readable
     # .withColumn("InvoiceDate", f.to_date(f.col("InvoiceDate"), "dd-MM-yyyy H.mm")) transforms the column InvoiceDate to the date format that we want
     # So that can we extract the week of the year using .withColumn("WeekNumber", f.weekofyear(f.col("InvoiceDate"))) \
+    # coalesce
     
     NumInvoices = f.countDistinct("InvoiceNo").alias("NumInvoices")
     TotalQuantity = f.sum("Quantity").alias("TotalQuantity")
@@ -468,4 +469,39 @@ if __name__ == "__main__":
 
     exSummary_df.sort("Country", "WeekNumber").show()
     
+ ~~~
+
+Windowing Aggregations:
+
+~~~python
+
+#1. Identifying your partitioning columns -> In our example: the "Country"
+#2. Identifying your ordering requirements; -> In our example: the "WeekNumber"
+#3. Define your window start and end; In our example: The first report until current report;
+# Examples: lag(), lead(), rank(), dense_rank()
+
+from pyspark.sql import SparkSession, Window
+from pyspark.sql import functions as f
+
+from lib.logger import Log4j
+
+if __name__ == "__main__":
+    spark = SparkSession \
+        .builder \
+        .appName("Agg Demo") \
+        .master("local[2]") \
+        .getOrCreate()
+
+    logger = Log4j(spark)
+
+    summary_df = spark.read.parquet("data/summary.parquet")
+
+    running_total_window = Window.partitionBy("Country") \
+        .orderBy("WeekNumber") \
+        .rowsBetween(-2, Window.currentRow)
+
+    summary_df.withColumn("RunningTotal",
+                         f.sum("InvoiceValue").over(running_total_window)) \
+                          .show()
+        
  ~~~
