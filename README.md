@@ -320,3 +320,4 @@ spark.sql.shuffle.partitions = 2
     
 ~~~
 
+If the data parsed does not check the Schema defined, Spark will have its behaviour defined by the .option("mode", <>) parameter;
