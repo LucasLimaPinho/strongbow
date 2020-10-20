@@ -14,7 +14,7 @@ if __name__ == "__main__":
         .setMaster("local[3]") \
         .setAppName("HelloRDD")
 
-    # sc = SparkContext(conf=conf)
+    #sc = SparkContext(conf=conf)
     spark = SparkSession.builder.config(conf=conf).getOrCreate()
     sc = spark.sparkContext
     logger = Log4j(spark)
@@ -25,6 +25,7 @@ if __name__ == "__main__":
 
     linesRDD = sc.textFile(sys.argv[1])
     partitionedRDD = linesRDD.repartition(2)
+
 
     colsRDD = partitionedRDD.map(lambda line: line.replace('"', '').split(","))
     selectRDD = colsRDD.map(lambda cols: SurveyRecord(int(cols[1]), cols[2], cols[3], cols[4]))

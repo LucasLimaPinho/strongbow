@@ -28,6 +28,6 @@ class UtilsTestCase(TestCase):
         self.assertEqual(count_dict["Canada"], 2, "Count for Canada should be 2")
         self.assertEqual(count_dict["United Kingdom"], 1, "Count for Unites Kingdom should be 1")
 
-    @classmethod
-    def tearDownClass(cls) -> None:
-        cls.spark.stop()
+    # @classmethod
+    # def tearDownClass(cls) -> None:
+    #     #cls.spark.stop()

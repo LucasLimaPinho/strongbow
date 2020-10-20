@@ -25,10 +25,22 @@ if __name__ == "__main__":
     # Simple transformations - Showing that we have RDD
 
     # survey_under_40 = survey_raw_df.where("Age < 40")\
-    #     .select("Age","Gender","Country","state")
-    # survey_under_40.show()
+    #     .select("Age", "Gender", "Country", "state")\
+    #     .groupBy("Country")
+
+    # Estamos dividindo a partition em two
+    # partitioned_survey_df deve ter duas partições
 
     partitioned_survey_df = survey_raw_df.repartition(2)
+
+    # Temos internamente na função count_by_country um processo de groupBy() que é uma
+    # Wide Dependency Transformation. Portanto, Spark irá executar o processo de Shuffle/Sort Exchange
+    # gerando mais partitions;
+    # Nós não sabemos quantas partições teremos após o Shuffle/Sort, mas queremos controlar esse comportamento
+    # Como fazer isso?
+    # Podemos controlar usando configuração.
+
+
     count_df = count_by_country(partitioned_survey_df)
     count_df.show()
 
