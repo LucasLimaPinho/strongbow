@@ -416,8 +416,18 @@ if __name__ == "__main__":
 
 ~~~python
 
+# You need to register your User Defined Function in the SparkSession() object so that it can send to the Executors JVMs
+# This one registers as a Dataframe UDF
+
 parse_gender_udf = udf(parse_gender, StringType())
+[logger.info(f) for f in spark.catalog.listFunctions() if "parse_gender" in f.name] # Python List Comprehension
 survey_df2 = survey_df.withColumn("Gender", parse_gender_udf("Gender"));
+
+# Registering as a SQL function UDF
+# THis one will also create an entry in the catalog
+# If you want to use your function in a SQL expression, you must register like this
+
+spark.udf.register("parse_gender_udf", parse_gender, StringType())
 
 ~~~
 
