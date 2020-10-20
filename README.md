@@ -428,6 +428,8 @@ survey_df2 = survey_df.withColumn("Gender", parse_gender_udf("Gender"));
 # If you want to use your function in a SQL expression, you must register like this
 
 spark.udf.register("parse_gender_udf", parse_gender, StringType())
+# Will work because right now is in the spark.catalog.
+survey_df3 = survey_df.withColumn("Gender", expr("parse_gender_udf(Gender)"))
 
 ~~~
 
