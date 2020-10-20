@@ -254,3 +254,4 @@ spark.sql.shuffle.partitions = 2
 
 ~~~
 
+* **Execution Plan**: Application -> Jobs -> Stages -> Tasks; Tasks are that are assigned to Executors JVMs;
