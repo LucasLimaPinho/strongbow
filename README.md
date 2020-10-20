@@ -411,7 +411,7 @@ if __name__ == "__main__":
 * airLinesDF.select(column("Origin"), col("Dest"), airLinesDF.Distance).show(10) ---> acessing using **Column Objects**; All these methods are the same.
 * you can use both Column String and Column Object together;
 * expr() converts a String object into a Column object allowing to use .select()
-
+* . withColumn() allows you to transform a SINGLE column without impacting the other columns in the dataframe
 
 #### Spark DataFrame Aggregations
 
