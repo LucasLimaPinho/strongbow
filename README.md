@@ -256,3 +256,16 @@ spark.sql.shuffle.partitions = 2
 
 * **Execution Plan**: Application -> Jobs -> Stages -> Tasks; Tasks are that are assigned to Executors JVMs;
 * Jobs are triggered by actions; In our example, we have 2 Jobs triggered by method csv and 1 job triggered by collect. All of the execution plan can be seen at http://localhost:4040/jobs putting a stop point with "input("Press Enter")";
+
+#### Spark Resilient Distributed Datasets (RDD)
+
+* Unlike Dataframes, Datasets store language native objects (Java/Scala); They don't have a row/column structure; 
+* RDD's are fault-tolerant; When a executor fails, the Driver (Spark Session) will assign the RDD's that were lost to other executors that remained up;
+* RDD's lack row/column schema that dataframe have;
+* RDD API's are based on SparkContext (old entrypoint);
+* RDD's use a lot of **map transformations: takes a lambda function and runs within a loop for each line**;
+
+#### Spark SQL
+
+* You can run SQL queries only in a **table or a view**;
+* Spark allows you to register your dataframe as View - surveyDF.createOrReplaceTempView("survey_tbl")
