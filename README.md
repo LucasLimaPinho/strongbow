@@ -255,3 +255,4 @@ spark.sql.shuffle.partitions = 2
 ~~~
 
 * **Execution Plan**: Application -> Jobs -> Stages -> Tasks; Tasks are that are assigned to Executors JVMs;
+* Jobs are triggered by actions; In our example, we have 2 Jobs triggered by method csv and 1 job triggered by collect. All of the execution plan can be seen at http://localhost:4040/jobs putting a stop point with "input("Press Enter")";
