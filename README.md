@@ -404,6 +404,14 @@ if __name__ == "__main__":
     new_df.printSchema()
     new_df.show()
 ~~~
+#### Working with Dataframe Columns:
+
+* They can't work outside of a transformation.
+* airLinesDF.select("Origin", "Dest", "Distance").show(10) --> Simplest way to access columns inside a transformation; Accessing using **Column String**
+* airLinesDF.select(column("Origin"), col("Dest"), airLinesDF.Distance).show(10) ---> acessing using **Column Objects**; All these methods are the same.
+* you can use both Column String and Column Object together;
+* expr() converts a String object into a Column object allowing to use .select()
+
 
 #### Spark DataFrame Aggregations
 
