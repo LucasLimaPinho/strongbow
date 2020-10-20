@@ -189,4 +189,35 @@ You can configure Spark Session with 4 different methods:
 
 #### Spark Transformations and Actions
 
+* Spark Data Frame is a immutable data structure; 
+* Instructions to the driver are called Transformations; 
+* GroupedBy does not have method .show(), you need to apply .count();
+* Narrow Transformation versus Wide Transformations; Narrow Dependency Transformation do not depend on any other partition like the clause WHERE; Wide Dependency Transformations depends on other partitions to produce valid results. Example of **Wide Dependency Transformation** is a groupBy() transformation;
+* Simpling combining the outputs from Executos JVM's in Wide Dependency Transformations will not produce a valid result - when we say simply combine we mean concatenation line under line;
+* When dealing with **Wide Dependency Transformations**, Spark needs to perform **Shuffle/Sort Exchange between partitions** to try to achieve a valid result; Wide Dependency Transformations: groupBy(), orderBy(), join(), distinct();
+* Lazy Evaluations? Driver creates an execution plan when we have a lot of statements; Lines of transformations are not performed individually, but yes optimzed into a Execution Plan between the Executos JVMs. Execution Plans are terminated with **ACTIONS**;
+* **Actions**: Read, Write, Collect, Show;
+
+~~~python
+
+spark = SparkSession \
+  .builder\
+  .appName("strongbow")\
+  .config(conf=conf)\
+  .getOrCreate()
+
+# Lazy Transformations (Narrow Dependency and Wide Dependency Transformations) - will result in a Execution Plan
+
+survey_df = load_survey_df(spark, sys.argv[1])
+filtered_df = survey_df.where("Age < 40")
+selected_df = filtered_df.select("Age","Gender","Country","state")
+grouped_df = selected_df.groupBy("Country")
+count_df = grouped_df.count()
+
+# ACTION - Read, Write, Collect (generates python list), Show (generates complex structure)
+count_df.show()
+
+~~~
+
+
 
