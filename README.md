@@ -176,3 +176,17 @@ You can configure Spark Session with 4 different methods:
 * SparkContext represents the connection to a Spark Cluster
 * SparkContext can be used to get SparkConf object
 * SparkContext was a entrypoint to Programming Spark in older versions
+
+#### Spark Data Frames
+
+* Spark as Processing Framework: Read, Process, Write;
+* Each column has a specific data type - it is inspired in pandas dataframe;
+* We are going tor read the file as a bunch of **in Memory partitions**. We can set the number of repartitions manually;
+* Your dataframe is a bunch of smaller dataframes distributed through the nodes; AT runtime, your SparkSession() object (Driver) knows how many partition are in your distributed data file system; It can create a Logical In-Memory structure.
+* The Driver distributes the dataframe partitions through the Executor JVM; Each Executor JVM Core is assigned with it's own partition to work on.
+* **Spark will try to assign the partitions in HDFS that are closer to the Executor JVM's that are going to execute processing to reduce bandwith in the network**;
+* Spark Engine will work together with your Cluster Manager to optimze this allocation between HDFS partitions and Executors JVM's;
+
+#### Spark Transformations and Actions
+
+
