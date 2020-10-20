@@ -297,7 +297,8 @@ spark.sql.shuffle.partitions = 2
 
 ~~~python
 
-#Schema construction with SparkDataTypes
+# Schema construction with SparkDataTypes
+# StructField -> Column Definition
 
     flightSchemaStruct = StructType([
         StructField("FL_DATE", DateType()),
