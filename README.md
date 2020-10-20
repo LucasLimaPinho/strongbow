@@ -270,3 +270,52 @@ spark.sql.shuffle.partitions = 2
 * You can run SQL queries only in a **table or a view**;
 * Spark allows you to register your dataframe as View - surveyDF.createOrReplaceTempView("survey_tbl")
 * SQL has no additional significant computation cost;
+
+#### Spark Data Sources and Sinks
+
+* You can connect directly to your external sources - preferable for **Streaming**;
+* You can ingest your external data source to your data lake - preferable for **Batch Processing**;
+
+#### Spark DataFrameReader API
+
+* To integrate with internal filesystems in DataLakes;
+  * spark.read
+    * .format()
+    * .option()
+    * .option()
+    * ...
+    * .schema()
+    * .load()
+* Every datasource has a list of .options in spark.read();
+* "mode" is a very important .option() in spark.read();
+* .schema() -> 1. Explicit, 2. Implicit, 3. InferSchema;
+* Some datasources such PARQUET and AVRO comes with a pretty well defined schema inside the datasource; In those cases, you don't need to specify a schema;
+* Finally, you can call the .load() method;
+* You basically can't rely on inferSchema, specially for dates, and should create Schema for a DataFrame;
+* Parquet already comes with Schema included in the datafile - so you don't need to explicit specify; **Prefereable**
+* We create Schema **based on Spark Data Types**; 
+
+~~~python
+
+#Schema construction with SparkDataTypes
+
+    flightSchemaStruct = StructType([
+        StructField("FL_DATE", DateType()),
+        StructField("OP_CARRIER", StringType()),
+        StructField("OP_CARRIER_FL_NUM", IntegerType()),
+        StructField("ORIGIN", StringType()),
+        StructField("ORIGIN_CITY_NAME", StringType()),
+        StructField("DEST", StringType()),
+        StructField("DEST_CITY_NAME", StringType()),
+        StructField("CRS_DEP_TIME", IntegerType()),
+        StructField("DEP_TIME", IntegerType()),
+        StructField("WHEELS_ON", IntegerType()),
+        StructField("TAXI_IN", IntegerType()),
+        StructField("CRS_ARR_TIME", IntegerType()),
+        StructField("ARR_TIME", IntegerType()),
+        StructField("CANCELLED", IntegerType()),
+        StructField("DISTANCE", IntegerType())
+    ])
+    
+~~~
+
