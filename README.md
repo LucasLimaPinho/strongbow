@@ -248,7 +248,7 @@ Notice that after we stablish that survey_raw_df should be partitioned into 2, w
 ~~~python
 
 [SPARK_APP_CONFIGS]
-spark.app.name = HelloSpark
+spark.app.name = Strongbow
 spark.master = local[3]
 spark.sql.shuffle.partitions = 2
 
