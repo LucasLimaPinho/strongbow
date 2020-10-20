@@ -404,6 +404,7 @@ if __name__ == "__main__":
     new_df.printSchema()
     new_df.show()
 ~~~
+
 #### Working with Dataframe Columns:
 
 * They can't work outside of a transformation.
@@ -411,7 +412,14 @@ if __name__ == "__main__":
 * airLinesDF.select(column("Origin"), col("Dest"), airLinesDF.Distance).show(10) ---> acessing using **Column Objects**; All these methods are the same.
 * you can use both Column String and Column Object together;
 * expr() converts a String object into a Column object allowing to use .select()
-* . withColumn() allows you to transform a SINGLE column without impacting the other columns in the dataframe
+* . withColumn() allows you to transform a SINGLE column without impacting the other columns in the dataframe; It takes two arguments. The first one is the columns name that you want to transform and the second one is a column_expression. We can use User Defined Functions (UDF) as the second argument. Ex. 
+
+~~~python
+
+parse_gender_udf = udf(parse_gender, StringType())
+survey_df2 = survey_df.withColumn("Gender", parse_gender_udf("Gender"));
+
+~~~
 
 #### Spark DataFrame Aggregations
 
