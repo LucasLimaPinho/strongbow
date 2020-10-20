@@ -595,8 +595,7 @@ if __name__ == "__main__":
 #### Spark Streaming With Spark 1.6
 
 ~~~python
-
-       # To initialize a Spark Streaming program, a StreamingContext
+        # To initialize a Spark Streaming program, a StreamingContext
         # object has to be created which is the main entry point of all Spark Streaming functionality.
 
         # sc = SparkContext(master, appName)
@@ -650,7 +649,34 @@ if __name__ == "__main__":
         #   2. Advanced Sources: Sources like Kafka, Flume, Kinesis, Twitter, etc. are available through
         #       extra utility classes. These require linking against extra dependencies
         #       [here] https://spark.apache.org/docs/1.6.0/streaming-programming-guide.html#linking
-        
-   ~~~
+
+        # [KAFKA INTEGRATION GUIDE] (https://spark.apache.org/docs/1.6.0/streaming-kafka-integration.html)
+
+        # Receiving data over the network (like Kafka, Flume, socket, etc.) requires the
+        # data to be deserialized and stored in Spark
+
+        # If the data receiving becomes a bottleneck in the system,
+        # then consider parallelizing the data receiving.
+
+        # Note that each input DStream creates a single receiver (running on a worker machine)
+        # that receives a single stream of data. Receiving multiple data streams can therefore be
+        # achieved by creating multiple input DStreams and configuring them to receive different
+        # partitions of the data stream from the source(s).
+
+        # For example, a single Kafka input DStream receiving
+        # two topics of data can be split into two Kafka input streams, each receiving only one topic
+
+        # This would run two receivers, allowing data to be received in parallel, thus increasing overall throughput.
+        # These multiple DStreams can be unioned together to create a single DStream.
+
+        # Then the transformations that were being applied on a single input DStream can be applied on the unified stream.
+        # This is done as follows
+
+numStreams = 5
+kafkaStreams = [KafkaUtils.createStream(...) for _ in range (numStreams)]
+unifiedStream = streamingContext.union(*kafkaStreams)
+unifiedStream.pprint()
+
+~~~
    
    
