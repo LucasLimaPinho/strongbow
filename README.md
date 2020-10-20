@@ -677,6 +677,98 @@ kafkaStreams = [KafkaUtils.createStream(...) for _ in range (numStreams)]
 unifiedStream = streamingContext.union(*kafkaStreams)
 unifiedStream.pprint()
 
+        # For most receivers, the received data is coalesced together into blocks of data before storing
+        # inside Spark’s memory.
+        # The number of blocks in each batch determines the number of tasks that will be used to process
+        # the received data in a map-like transformation.
+
+        # The number of tasks per receiver per batch will be approximately (batch interval / block interval).
+        # For example, block interval of 200 ms will create 10 tasks per 2 second batches. If the number of tasks is too
+        # low (that is, less than the number of cores per machine), then it will be inefficient as all available cores
+        # will not be used to process the data. To increase the number of tasks for a given batch interval, reduce the
+        # block interval. However, the recommended minimum value of block interval is about 50 ms, below which the task
+        # launching overheads may be a problem
+
+        ## LEVEL OF PARALLELISM IN DATA PROCESSING
+
+        # Cluster resources can be under-utilized if the number of parallel tasks used in any stage of the computation is
+        # not high enough. For example, for distributed reduce operations like reduceByKey and reduceByKeyAndWindow, the
+        # default number of parallel tasks is controlled by the spark.default.parallelism configuration property. You can
+        # pass the level of parallelism as an argument (see PairDStreamFunctions documentation), or set the
+        # spark.default.parallelism configuration property to change the default.
+
+        ## SETTING THE RIGHT BATCH INTERVAL
+
+        # For a Spark Streaming application running on a cluster to be stable, the system should be able to process data
+        # as fast as it is being received. In other words, batches of data should be processed as fast as they are being
+        # generated. Whether this is true for an application can be found by monitoring the processing times in the
+        # streaming web UI, where the batch processing time should be less than the batch interval.
+        #
+        # Depending on the nature of the streaming computation, the batch interval used may have significant impact
+        # on the data rates that can be sustained by the application on a fixed set of cluster resources. For example,
+        # let us consider the earlier WordCountNetwork example. For a particular data rate, the system may be able to
+        # keep up with reporting word counts every 2 seconds (i.e., batch interval of 2 seconds),
+        # but not every 500 milliseconds. So the batch interval needs to be set such that the expected data rate in
+        # production can be sustained.
+        #
+        # A good approach to figure out the right batch size for your application is to test it with a conservative
+        # batch interval (say, 5-10 seconds) and a low data rate. To verify whether the system is able to keep up with
+        # the data rate, you can check the value of the end-to-end delay experienced by each processed batch
+        # (either look for “Total delay” in Spark driver log4j logs, or use the StreamingListener interface).
+        # If the delay is maintained to be comparable to the batch size, then system is stable.
+        # Otherwise, if the delay is continuously increasing, it means that the system is unable to keep up and it
+        # therefore unstable. Once you have an idea of a stable configuration, you can try increasing the data rate
+        # and/or reducing the batch size. Note that a momentary increase in the delay due to temporary data rate
+        # increases may be fine as long as the delay reduces back to a low value (i.e., less than batch size).
+
+        # Points to remember:
+        #
+        # Topic partitions in Kafka does not correlate to partitions of RDDs generated in Spark Streaming.
+        # So increasing the number of topic-specific partitions in the KafkaUtils.createStream() only increases the
+        # number of threads using which topics that are consumed within a single receiver. It does not increase the
+        # parallelism of Spark in processing the data. Refer to the main document for more information on that.
+        #
+        # Multiple Kafka input DStreams can be created with different groups and topics for parallel receiving of data
+        # using multiple receivers.
+        #
+        # If you have enabled Write Ahead Logs with a replicated file system like HDFS, the received data is already
+        # being replicated in the log. Hence, the storage level in storage level for the input stream
+        # to StorageLevel.MEMORY_AND_DISK_SER (that is, use KafkaUtils.createStream(..., StorageLevel.MEMORY_AND_DISK_SER))
+
+        # Approach 2: Direct Approach (No Receivers)
+        # This new receiver-less “direct” approach has been introduced in Spark 1.3 to ensure stronger
+        # end-to-end guarantees. Instead of using receivers to receive data, this approach periodically queries
+        # Kafka for the latest offsets in each topic+partition, and accordingly defines the offset ranges to process
+        # in each batch. When the jobs to process the data are launched, Kafka’s simple consumer API is used to read
+        # the defined ranges of offsets from Kafka (similar to read files from a file system).
+        # Note that this is an experimental feature introduced in Spark 1.3 for the Scala and Java API, in Spark 1.4
+        # for the Python API.
+
+        # This approach has the following advantages over the receiver-based approach (i.e. Approach 1).
+        #
+        # Simplified Parallelism: No need to create multiple input Kafka streams and union them.
+        # With directStream, Spark Streaming will create as many RDD partitions as there are Kafka partitions
+        # to consume, which will all read data from Kafka in parallel. So there is a one-to-one mapping between Kafka
+        # and RDD partitions, which is easier to understand and tune.
+
+        # Efficiency: Achieving zero-data loss in the first approach required the data to be stored in a Write Ahead Log,
+        # which further replicated the data. This is actually inefficient as the data effectively gets replicated twice
+        # - once by Kafka, and a second time by the Write Ahead Log. This second approach eliminates the problem
+        # as there is no receiver, and hence no need for Write Ahead Logs. As long as you have sufficient Kafka retention,
+        # messages can be recovered from Kafka.
+
+        # Exactly-once semantics: The first approach uses Kafka’s high level API to store consumed offsets in Zookeeper.
+        # This is traditionally the way to consume data from Kafka. While this approach (in combination with write ahead logs)
+        # can ensure zero data loss (i.e. at-least once semantics), there is a small chance some records may get consumed
+        # twice under some failures. This occurs because of inconsistencies between data reliably received by Spark Streaming
+        # and offsets tracked by Zookeeper. Hence, in this second approach, we use simple Kafka API that does not use Zookeeper.
+        # Offsets are tracked by Spark Streaming within its checkpoints. This eliminates inconsistencies between
+        # Spark Streaming and Zookeeper/Kafka, and so each record is received by Spark Streaming effectively exactly
+        # once despite failures. In order to achieve exactly-once semantics for output of your results,
+        # your output operation that saves the data to an external data store must be either idempotent,
+        # or an atomic transaction that saves results and offsets (see Semantics of output operations in
+        # the main programming guide for further information).
+
 ~~~
    
    
